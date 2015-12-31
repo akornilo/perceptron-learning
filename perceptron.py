@@ -34,7 +34,7 @@ def parseDataFile(file):
 
 trainFile = "data/" + category + ".train"
 
-trainData = parseDataFile(trainFile)
+trainData = parseDataFile(trainFile).items()
 
 # Helper functions for vectors
 def dotProd(v1, v2):
@@ -49,10 +49,9 @@ def vecAdd(v1, v2, sign = 1):
 		v1[key] = v1.get(key, 0) + sign * val
 	return v1
 
-weights = {}
 
-# Small hack to simplify shuffle
-trainData = trainData.items()
+# Start of PLA algorithm
+weights = {}
 
 # Pick a fixed number of times to iterate through the data
 for i in range(10):
@@ -69,40 +68,27 @@ for i in range(10):
 		if not (dp * actualSign > 0):
 			weights = vecAdd(weights, vec, actualSign)
 
-print Counter(weights)
-# Evaluate on the training data
-wrong = 0
-total = 0
+# Evaluation code
+def evalData(weights, points):
+	global key
+	wrong = 0
 
-for article, vec in trainData:
+	for article, vec in points:
 
-	dp = dotProd(weights, vec)
+		dp = dotProd(weights, vec)
 
-	actualSign = key[article]
+		actualSign = key[article]
 
-	# Check if article was misclassified
-	if not (dp * actualSign > 0):
-		wrong += 1
-	total += 1
+		# Check if article was misclassified
+		if not (dp * actualSign > 0):
+			wrong += 1
+	return wrong
 
+wrong = evalData(weights, trainData)
+total = len(trainData)
 print "Train Data:", wrong, total, wrong * 100.0 / total
 
-# Evaluate on the test set
-
-testData = parseDataFile("data/" + category + ".test")
-# Evaluate on the training data
-wrong = 0
-total = 0
-
-for article, vec in testData.items():
-
-	dp = dotProd(weights, vec)
-
-	actualSign = key[article]
-
-	# Check if article was misclassified
-	if not (dp * actualSign > 0):
-		wrong += 1
-	total += 1
-
+testData = parseDataFile("data/" + category + ".test").items()
+wrong = evalData(weights, testData)
+total = len(testData)
 print "Test data:", wrong, total, wrong * 100.0 / total
