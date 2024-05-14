@@ -1,9 +1,7 @@
 from collections import Counter
 from random import shuffle
 
-from sklearn.ensemble import RandomForestClassifier
-clf = RandomForestClassifier(random_state=0)
-
+# scikit-learn
 category = "atheistchristian"
 keyFile = open("data/" + category + ".response")
 
