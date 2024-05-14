@@ -1,7 +1,7 @@
 from collections import Counter
 from random import shuffle
 
-#scikit_learn
+import scikit-learn
 category = "atheistchristian"
 keyFile = open("data/" + category + ".response")
 
